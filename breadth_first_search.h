@@ -1,5 +1,5 @@
-#ifndef __DEPTH_FIRST_SEARCH__
-#define __DEPTH_FIRST_SEARCH__
+#ifndef __BREADTH_FIRST_SEARCH__
+#define __BREADTH_FIRST_SEARCH__
 
 #include "search_problem.h"
 
@@ -10,7 +10,7 @@
 #include <iostream>
 
 template <typename PROBLEMTYPE>
-class DepthFirstSearch
+class BreadthFirstSearch
 {
 public:
   typedef PROBLEMTYPE                        ProblemType;
@@ -18,13 +18,13 @@ public:
   typedef typename ProblemType::ActionType   ActionType;
   typedef typename ProblemType::SolutionType SolutionType;
 
-  DepthFirstSearch ()                                        = delete;
-  DepthFirstSearch (const DepthFirstSearch& orig)            = default;
-  DepthFirstSearch (DepthFirstSearch&& orig)                 = delete;
-  DepthFirstSearch& operator= (const DepthFirstSearch& orig) = delete;
-  ~DepthFirstSearch ()                                       = default;
+  BreadthFirstSearch ()                                          = delete;
+  BreadthFirstSearch (const BreadthFirstSearch& orig)            = default;
+  BreadthFirstSearch (BreadthFirstSearch&& orig)                 = delete;
+  BreadthFirstSearch& operator= (const BreadthFirstSearch& orig) = delete;
+  ~BreadthFirstSearch ()                                         = default;
 
-  DepthFirstSearch (const ProblemType& problem)
+  BreadthFirstSearch (const ProblemType& problem)
     : _problem(problem)
   { }
 
@@ -45,7 +45,7 @@ public:
     bool keepSearching = true;
 
     while (!frontier.empty() && keepSearching) {
-      auto curStateInfo = frontier.back();
+      auto curStateInfo = frontier.front();
       frontier.pop();
 
       auto curState = curStateInfo.state;
@@ -94,4 +94,4 @@ private:
   const ProblemType _problem;
 };
 
-#endif // __DEPTH_FIRST_SEARCH__
+#endif // __BREADTH_FIRST_SEARCH__
