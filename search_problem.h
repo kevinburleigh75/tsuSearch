@@ -12,14 +12,19 @@
 #include <utility>
 #include <vector>
 
-template<typename StateType, typename ActionType>
+template<typename STATETYPE, typename ACTIONTYPE>
 class SearchProblem
 {
 public:
   class StateAction;
   class Builder;
+  class Solution;
 
 public:
+  typedef STATETYPE  StateType;
+  typedef ACTIONTYPE ActionType;
+  typedef Solution   SolutionType;
+
   typedef std::tuple<StateType,ActionType,double,StateType> TransitionInfoType;
   typedef std::function<bool(const StateType&)>             GoalTestType;
 
@@ -195,6 +200,38 @@ public:
     std::optional<StateType>                 _startState;
     std::set<StateType>                      _goalStates;
     std::vector<GoalTestType>                _goalTests;
+  };
+
+  ///////////////////////////////////////////////////////////////////
+  //
+  // inner class Solution
+  //
+  ///////////////////////////////////////////////////////////////////
+
+public:
+
+  class Solution
+  {
+  public:
+    Solution (const Solution& orig)            = default;
+    Solution (Solution&& orig)                 = delete;
+    Solution& operator= (const Solution& orig) = delete;
+    ~Solution ()                               = default;
+
+    Solution ()
+      : _solutionWasFound(false)
+    { }
+
+    void setSolutionWasFound (const bool solutionWasFound) {
+      _solutionWasFound = solutionWasFound;
+    }
+
+    bool getSolutionWasFound () const {
+      return _solutionWasFound;
+    }
+
+  private:
+    bool _solutionWasFound;
   };
 
   ///////////////////////////////////////////////////////////////////
