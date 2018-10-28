@@ -3,9 +3,11 @@
 
 #include "search_problem.h"
 
+#include "kevin_pq.h"
+
+#include <deque>
 #include <map>
 #include <set>
-#include <queue>
 
 #include <iostream>
 
@@ -37,18 +39,20 @@ public:
   {
     SolutionType solution;
 
-    std::map<StateType,StateInfo> seen;
-    std::queue<StateInfo>         frontier;
+    long int push_counter = 0;
 
-    frontier.push({_problem.getStartState(), {}});
+    std::map<StateType,StateInfo>         seen;
+    KevinPq<long int,StateType,StateInfo> frontier;
+
+    auto startState = _problem.getStartState();
+
+    frontier.push({push_counter++, startState, {startState,{}}});
 
     bool keepSearching = true;
 
-    while (!frontier.empty() && keepSearching) {
-      auto curStateInfo = frontier.front();
-      frontier.pop();
+    while (!frontier.isEmpty() && keepSearching) {
+      auto [priority, curState, curStateInfo] = frontier.pop();
 
-      auto curState = curStateInfo.state;
       std::cout << "curState = " << curState << std::endl;
       seen.insert({curState,curStateInfo});
 
@@ -64,7 +68,7 @@ public:
       for (auto action : _problem.getActionsForState(curState)) {
         auto successor = _problem.getActionSuccessor(curState, action);
         if (!seen.count(successor)) {
-          frontier.push({successor,curState});
+          frontier.push({push_counter++, successor, {successor,curState}});
         }
       }
     }
