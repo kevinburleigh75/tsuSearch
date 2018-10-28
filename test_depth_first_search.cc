@@ -21,10 +21,11 @@ int main () {
       {5, "to7", 1.0, 7},
       {5, "to6", 1.0, 6},
       {6, "to7", 1.0, 7},
-      {7, "to6", 1.0, 6}
+      {7, "to4", 3.0, 4},
+      {7, "to6", 1.0, 6},
     })
     .setStateState(1)
-    .addGoalState(6);
+    .addGoalState(4);
 
   auto searchProblem = spBuilder.build();
 
@@ -32,4 +33,9 @@ int main () {
   auto soln = dfs.solve();
 
   cout << "solutionWasFound = " << boolalpha << soln.getSolutionWasFound() << endl;
+  cout << "path: ";
+  for (auto state : soln.getPath()) {
+    cout << state << ", ";
+  }
+  cout << endl;
 }

@@ -3,8 +3,11 @@
 
 #include "search_problem.h"
 
+#include <map>
 #include <set>
 #include <stack>
+
+#include <iostream>
 
 template <typename PROBLEMTYPE>
 class DepthFirstSearch
@@ -25,38 +28,76 @@ public:
     : _problem(problem)
   { }
 
+  struct StateInfo {
+    StateType                state;
+    std::optional<StateType> parentState;
+  };
+
   SolutionType solve () const
   {
     SolutionType solution;
 
-    std::set<StateType>   expanded;
-    std::set<StateType>   seen;
-    std::stack<StateType> frontier;
+    std::map<StateType,StateInfo> seen;
+    std::stack<StateInfo>         frontier;
 
-    frontier.push(_problem.getStartState());
+    frontier.push({_problem.getStartState(), {}});
 
-    while (!frontier.empty()) {
-      StateType curState = frontier.top();
+    bool keepSearching = true;
+
+    while (!frontier.empty() && keepSearching) {
+      auto curStateInfo = frontier.top();
       frontier.pop();
 
-      seen.insert(curState);
+      auto curState = curStateInfo.state;
+      std::cout << "curState = " << curState << std::endl;
+      seen.insert({curState,curStateInfo});
 
       if (_problem.isGoal(curState)) {
         solution.setSolutionWasFound(true);
-        break;
-      }
 
-      expanded.insert(curState);
+        this->addPathToSolution(solution, curStateInfo, seen);
+        keepSearching = false;
+
+        continue;
+      }
 
       for (auto action : _problem.getActionsForState(curState)) {
         auto successor = _problem.getActionSuccessor(curState, action);
         if (!seen.count(successor)) {
-          frontier.push(successor);
+          if (_problem.isGoal(successor)) {
+            solution.setSolutionWasFound(true);
+
+            this->addPathToSolution(solution, {successor,curState}, seen);
+            keepSearching = false;
+
+            break;
+          }
+          else {
+            frontier.push({successor,curState});
+          }
         }
       }
     }
 
     return solution;
+  }
+
+  void addPathToSolution (SolutionType&                       solution,
+                          const StateInfo&                    curStateInfo,
+                          const std::map<StateType,StateInfo> seen) const
+  {
+    std::deque<StateType> path;
+    path.push_front(curStateInfo.state);
+
+    StateInfo current = curStateInfo;
+    while (current.parentState.has_value()) {
+      current = seen.at(*current.parentState);
+      path.push_front(current.state);
+    }
+
+    for (auto state : path) {
+        solution.addPathState(state);
+    }
   }
 
 private:

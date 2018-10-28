@@ -230,8 +230,17 @@ public:
       return _solutionWasFound;
     }
 
+    void addPathState (const StateType& state) {
+      _path.push_back(state);
+    }
+
+    const std::vector<StateType>& getPath () const {
+      return _path;
+    }
+
   private:
-    bool _solutionWasFound;
+    bool                   _solutionWasFound;
+    std::vector<StateType> _path;
   };
 
   ///////////////////////////////////////////////////////////////////
@@ -310,6 +319,7 @@ public:
       }
     }
 
+    std::cout << "  isGoal(" << state << "): " << std::boolalpha << result << std::endl;
     return result;
   }
 
