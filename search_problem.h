@@ -289,18 +289,22 @@ public:
     return _startState;
   }
 
-  const std::set<ActionType>& getActionsForState(const StateType& state) const {
+  const std::set<ActionType>& getActionsForState (const StateType& state) const {
     return _actionsByState.at(state);
   }
 
-  const StateType& getActionSuccessor(const StateType& state, const ActionType& action) const {
+  const StateType& getActionSuccessor (const StateType& state, const ActionType& action) const {
     StateAction stateAction(state, action);
     return _successorByStateAction.at(stateAction);
   }
 
-  double getActionCost(const StateType& state, const ActionType& action) const {
+  double getActionCost (const StateType& state, const ActionType& action) const {
     StateAction stateAction(state, action);
     return _costByStateAction.at(stateAction);
+  }
+
+  double getStateHeuristic (const StateType& state) const {
+    return 0.0;
   }
 
   bool isGoal (const StateType& state) const {

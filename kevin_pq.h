@@ -67,6 +67,11 @@ public:
     return (_tupleMap.find(node) != _tupleMap.end());
   }
 
+  TupleMapType get (const NodeType& node) const {
+    auto pos = _tupleMap.find(node);
+    return (*pos).second;
+  }
+
   TupleMapType remove (const NodeType& node) {
     auto mapPos = _tupleMap.find(node);
     auto tuple = (*mapPos).second;
