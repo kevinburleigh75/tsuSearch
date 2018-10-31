@@ -33,15 +33,11 @@ public:
 
   SolutionType solve ()
   {
-    std::cout << "starting solve" << std::endl;
-
     SolutionType solution;
 
     ScratchpadType scratch;
 
     auto startState = _problem.getStartState();
-
-    std::cout << "  1" << std::endl;
 
     StateInfo startStateInfo {
       startState,
@@ -50,14 +46,10 @@ public:
       _problem.getStateHeuristic(startState),
     };
 
-    std::cout << "  2" << std::endl;
-
     scratch.frontierPush(
       _impl_getPriority(startStateInfo),
       startStateInfo
     );
-
-    std::cout << "  3" << std::endl;
 
     while (!scratch.frontierIsEmpty()) {
       auto [priority, curState, curStateInfo] = scratch.frontierPop();
@@ -65,7 +57,6 @@ public:
       std::cout << "curState = " << curState << std::endl;
 
       scratch.addToVisited(curStateInfo);
-      std::cout << "    4" << std::endl;
 
       if (_problem.isGoal(curState)) {
         solution.setSolutionWasFound(true);
@@ -73,17 +64,11 @@ public:
         break;
       }
 
-      std::cout << "    5" << std::endl;
-
       for (auto action : _problem.getActionsForState(curState)) {
-
-        std::cout << "      6" << std::endl;
         auto   successor   = _problem.getActionSuccessor(curState, action);
         double actionCost  = _problem.getActionCost(curState, action);
         double pathCost    = curStateInfo.pathCost + actionCost;
         double heuristic   = _problem.getStateHeuristic(successor);
-
-        std::cout << "      7" << std::endl;
 
         StateInfo sucStateInfo {
           successor,
@@ -94,15 +79,10 @@ public:
 
         auto priority = _impl_getPriority(sucStateInfo);
 
-        std::cout << "      8" << std::endl;
-
         if (!scratch.contains(successor)) {
-          std::cout << "        9" << std::endl;
-
           scratch.frontierPush(priority, sucStateInfo);
         }
         else if (_impl_shouldUpdateSeenStates()) {
-          std::cout << "        10" << std::endl;
           StateInfo oldStateInfo = scratch.remove(successor);
 
           if (sucStateInfo.pathCost < oldStateInfo.pathCost) {

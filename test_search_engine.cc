@@ -67,6 +67,38 @@ private:
   double _counter {0.0};
 };
 
+template <typename SEARCHPROBLEMTYPE>
+class Gbfs : public SearchEngine<SEARCHPROBLEMTYPE>
+{
+public:
+  Gbfs (const SEARCHPROBLEMTYPE& problem)
+    : SearchEngine<SEARCHPROBLEMTYPE>(problem)
+  { }
+
+  double _impl_getPriority (const typename SearchEngine<SEARCHPROBLEMTYPE>::StateInfo& stateInfo) {
+    return stateInfo.heuristic;
+  }
+  bool _impl_shouldUpdateSeenStates () {
+    return false;
+  }
+};
+
+template <typename SEARCHPROBLEMTYPE>
+class AStar : public SearchEngine<SEARCHPROBLEMTYPE>
+{
+public:
+  AStar (const SEARCHPROBLEMTYPE& problem)
+    : SearchEngine<SEARCHPROBLEMTYPE>(problem)
+  { }
+
+  double _impl_getPriority (const typename SearchEngine<SEARCHPROBLEMTYPE>::StateInfo& stateInfo) {
+    return stateInfo.pathCost + stateInfo.heuristic;
+  }
+  bool _impl_shouldUpdateSeenStates () {
+    return true;
+  }
+};
+
 int main () {
   SearchProblem<int,string>::Builder spBuilder;
 
@@ -84,6 +116,15 @@ int main () {
       {6, "to7", 1.0, 7},
       {7, "to4", 3.0, 4},
       {7, "to6", 1.0, 6},
+    })
+    .addStateHeuristics({
+      {1, 2.0},
+      {2, 1.0},
+      {3, 5.0},
+      {4, 0.0},
+      {5, 0.0},
+      {6, 2.0},
+      {7, 2.0},
     })
     .setStateState(1)
     .addGoalState(4);
@@ -123,6 +164,34 @@ int main () {
   {
     auto ucs = Ucs(searchProblem);
     auto soln = ucs.solve();
+
+    cout << "solutionWasFound = " << boolalpha << soln.getSolutionWasFound() << endl;
+    cout << "path: ";
+    for (auto state : soln.getPath()) {
+      cout << state << ", ";
+    }
+    cout << endl;
+  }
+
+  cout << "===== GBFS ===== " << endl;
+
+  {
+    auto gbfs = Gbfs(searchProblem);
+    auto soln = gbfs.solve();
+
+    cout << "solutionWasFound = " << boolalpha << soln.getSolutionWasFound() << endl;
+    cout << "path: ";
+    for (auto state : soln.getPath()) {
+      cout << state << ", ";
+    }
+    cout << endl;
+  }
+
+  cout << "===== AStar ===== " << endl;
+
+  {
+    auto astar = AStar(searchProblem);
+    auto soln = astar.solve();
 
     cout << "solutionWasFound = " << boolalpha << soln.getSolutionWasFound() << endl;
     cout << "path: ";

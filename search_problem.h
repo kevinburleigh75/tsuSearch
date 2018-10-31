@@ -26,6 +26,7 @@ public:
   typedef Solution   SolutionType;
 
   typedef std::tuple<StateType,ActionType,double,StateType> TransitionInfoType;
+  typedef std::tuple<StateType,double>                      HeuristicInfoType;
   typedef std::function<bool(const StateType&)>             GoalTestType;
 
   ///////////////////////////////////////////////////////////////////
@@ -105,6 +106,7 @@ public:
       if (_actionsByState.count(state) == 0) {
         std::set<ActionType> actions;
         _actionsByState.insert({state,actions});
+        _heuristicByState.insert({state,0.0});
       }
 
       return *this;
@@ -155,12 +157,30 @@ public:
     Builder& addGoalState (const StateType& goalState) {
       this->addState(goalState);
       _goalStates.insert(goalState);
+      _heuristicByState.insert({goalState,0.0});
       return *this;
     }
 
     Builder& addGoalStates (const std::vector<StateType>& goalStates) {
       for (auto state : goalStates) {
         this->addGoalState(state);
+      }
+      return *this;
+    }
+
+    Builder& addStateHeuristic (const HeuristicInfoType& info) {
+      auto [state, heuristic] = info;
+
+      this->addState(state);
+
+      _heuristicByState.insert({state,heuristic});
+
+      return *this;
+    }
+
+    Builder& addStateHeuristics (const std::vector<HeuristicInfoType>& infos) {
+      for (auto info : infos) {
+        this->addStateHeuristic(info);
       }
       return *this;
     }
@@ -177,6 +197,7 @@ public:
 
       SearchProblem result(
         _states,
+        _heuristicByState,
         _actionsByState,
         _costByStateAction,
         _successorByStateAction,
@@ -194,6 +215,7 @@ public:
 
   private:
     std::set<StateType>                      _states;
+    std::map<StateType,double>               _heuristicByState;
     std::map<StateType,std::set<ActionType>> _actionsByState;
     std::map<StateAction,double>             _costByStateAction;
     std::map<StateAction,StateType>          _successorByStateAction;
@@ -255,6 +277,7 @@ public:
 
 private:
   SearchProblem (const std::set<StateType>&                      states,
+                 const std::map<StateType,double>                heuristicByState,
                  const std::map<StateType,std::set<ActionType>>& actionsByState,
                  const std::map<StateAction,double>&             costByStateAction,
                  const std::map<StateAction,StateType>&          successorsByStateAction,
@@ -262,6 +285,7 @@ private:
                  const std::set<StateType>&                      goalStates,
                  const std::vector<GoalTestType>&                goalTests)
     : _states(states),
+      _heuristicByState(heuristicByState),
       _actionsByState(actionsByState),
       _costByStateAction(costByStateAction),
       _successorByStateAction(successorsByStateAction),
@@ -304,7 +328,14 @@ public:
   }
 
   double getStateHeuristic (const StateType& state) const {
-    return 0.0;
+    auto heuristic = 0.0;
+
+    auto pos = _heuristicByState.find(state);
+    if (pos != _heuristicByState.end()) {
+      heuristic = pos->second;
+    }
+
+    return heuristic;
   }
 
   bool isGoal (const StateType& state) const {
@@ -333,6 +364,7 @@ public:
 
 private:
   const std::set<StateType>                      _states;
+  const std::map<StateType,double>               _heuristicByState;
   const std::map<StateType,std::set<ActionType>> _actionsByState;
   const std::map<StateAction,double>             _costByStateAction;
   const std::map<StateAction,StateType>          _successorByStateAction;
