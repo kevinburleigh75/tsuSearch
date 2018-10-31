@@ -157,6 +157,7 @@ public:
     Builder& addGoalState (const StateType& goalState) {
       this->addState(goalState);
       _goalStates.insert(goalState);
+      _heuristicByState.erase(goalState);
       _heuristicByState.insert({goalState,0.0});
       return *this;
     }
@@ -173,6 +174,7 @@ public:
 
       this->addState(state);
 
+      _heuristicByState.erase(state);
       _heuristicByState.insert({state,heuristic});
 
       return *this;
@@ -328,13 +330,8 @@ public:
   }
 
   double getStateHeuristic (const StateType& state) const {
-    auto heuristic = 0.0;
-
     auto pos = _heuristicByState.find(state);
-    if (pos != _heuristicByState.end()) {
-      heuristic = pos->second;
-    }
-
+    auto heuristic = pos->second;
     return heuristic;
   }
 

@@ -1,6 +1,8 @@
 #ifndef __SCRATCHPAD__
 #define __SCRATCHPAD__
 
+#include <sstream>
+
 template <typename STATETYPE>
 class Scratchpad
 {
@@ -15,6 +17,16 @@ public:
     std::optional<StateType> predecessor;
     double                   pathCost;
     double                   heuristic;
+
+    std::string toString () const {
+      std::ostringstream ostr;
+      StateType pred = -1;
+      if (predecessor.has_value()) {
+        pred = *predecessor;
+      }
+      ostr << "SI<" << state << "," << pred << "," << pathCost << "," << heuristic << ">";
+      return ostr.str();
+    }
   };
 
   Scratchpad ()                                   = default;

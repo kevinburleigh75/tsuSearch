@@ -55,6 +55,7 @@ public:
       auto [priority, curState, curStateInfo] = scratch.frontierPop();
 
       std::cout << "curState = " << curState << std::endl;
+      // std::cout << "  " << curStateInfo.toString() << std::endl;
 
       scratch.addToVisited(curStateInfo);
 
@@ -77,16 +78,17 @@ public:
           heuristic,
         };
 
-        auto priority = _impl_getPriority(sucStateInfo);
+        auto sucPriority = _impl_getPriority(sucStateInfo);
 
         if (!scratch.contains(successor)) {
-          scratch.frontierPush(priority, sucStateInfo);
+          scratch.frontierPush(sucPriority, sucStateInfo);
         }
         else if (_impl_shouldUpdateSeenStates()) {
           StateInfo oldStateInfo = scratch.remove(successor);
+          auto oldSucPriority = _impl_getPriority(oldStateInfo);
 
-          if (sucStateInfo.pathCost < oldStateInfo.pathCost) {
-            scratch.frontierPush(priority, sucStateInfo);
+          if (sucPriority < oldSucPriority) {
+            scratch.frontierPush(sucPriority, sucStateInfo);
           }
           else {
             scratch.addToVisited(sucStateInfo);
