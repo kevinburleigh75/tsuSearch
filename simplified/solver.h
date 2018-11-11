@@ -10,9 +10,6 @@
 class Solver
 {
 public:
-  typedef Scratchpad::StateInfo StateInfo;
-
-public:
   Solver ()                               = delete;
   Solver (const Solver& orig)             = default;
   Solver (Solver&& orig)                  = delete;

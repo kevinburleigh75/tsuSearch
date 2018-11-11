@@ -2,16 +2,6 @@
 
 #include <sstream>
 
-std::string Scratchpad::StateInfo::toString () const {
-  std::ostringstream ostr;
-  State pred = -1;
-  if (predecessor) {
-    pred = *predecessor;
-  }
-  ostr << "SI<" << state << "," << pred << "," << pathCost << "," << heuristic << ">";
-  return ostr.str();
-}
-
 bool Scratchpad::frontierIsEmpty () const
 {
   return _frontier.isEmpty();
@@ -46,7 +36,7 @@ bool Scratchpad::contains (const State& state)
            (_visited.find(state) != _visited.end()) );
 }
 
-Scratchpad::StateInfo Scratchpad::getStateInfo (const State& state) const
+StateInfo Scratchpad::getStateInfo (const State& state) const
 {
   StateInfo stateInfo;
 
@@ -61,7 +51,7 @@ Scratchpad::StateInfo Scratchpad::getStateInfo (const State& state) const
   return stateInfo;
 }
 
-Scratchpad::StateInfo Scratchpad::remove (const State& state)
+StateInfo Scratchpad::remove (const State& state)
 {
   StateInfo stateInfo = this->getStateInfo(state);
 

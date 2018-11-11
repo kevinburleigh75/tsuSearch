@@ -11,15 +11,6 @@
 class Scratchpad
 {
 public:
-  struct StateInfo {
-    State                               state;
-    std::experimental::optional<State>  predecessor;
-    double                              pathCost;
-    double                              heuristic;
-
-    std::string toString () const;
-  };
-
   typedef std::tuple<Priority,State,StateInfo>  TupleType;
 
 public:
@@ -41,8 +32,8 @@ public:
   StateInfo remove       (const State& state);
 
 private:
-  std::map<State,StateInfo>         _visited;
-  KevinPq<Priority,State,StateInfo> _frontier;
+  std::map<State,StateInfo> _visited;
+  KevinPq                   _frontier;
 };
 
 #endif // __SCRATCHPAD_H__

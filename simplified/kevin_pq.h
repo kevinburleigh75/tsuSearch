@@ -1,35 +1,21 @@
 #ifndef __KEVIN_PQ__
 #define __KEVIN_PQ__
 
+#include "types.h"
+
 #include <map>
 #include <set>
 
-template <typename PRIORITYTYPE, typename NODETYPE, typename NODEINFOTYPE>
 class KevinPq
 {
 public:
-  typedef PRIORITYTYPE PriorityType;
-  typedef NODETYPE     NodeType;
-  typedef NODEINFOTYPE NodeInfoType;
+  typedef std::tuple<Priority,State,StateInfo> MapTuple;
 
-  typedef std::tuple<PriorityType,NodeType,NodeInfoType> TupleMapType;
+  struct PrioritySetElem {
+    const Priority priority;
+    const State    state;
 
-  struct PrioritySetElemType {
-    const PriorityType priority;
-    const NodeType     node;
-
-    bool operator< (const PrioritySetElemType& other) const {
-      bool result = false;
-
-      if (priority < other.priority) {
-        result = true;
-      }
-      else if ( (priority == other.priority) && (node < other.node) ) {
-        result = true;
-      }
-
-      return result;
-    }
+    bool operator< (const PrioritySetElem& other) const;
   };
 
   KevinPq ()                                = default;
@@ -38,62 +24,21 @@ public:
   KevinPq& operator= (const KevinPq& orig)  = delete;
   ~KevinPq ()                               = default;
 
-  bool isEmpty () const {
-    return _prioritySet.empty();
-  }
+  bool isEmpty () const;
 
-  TupleMapType pop () {
-    auto setPos = _prioritySet.begin();
-    auto elem = *setPos;
-    _prioritySet.erase(setPos);
+  MapTuple pop ();
 
-    auto mapPos = _tupleMap.find(elem.node);
-    auto tuple = (*mapPos).second;
-    _tupleMap.erase(mapPos);
+  void push (const MapTuple& tuple);
 
-    return tuple;
-  }
+  bool contains (const State& state) const;
 
-  void push (const TupleMapType& tuple)
-  {
-    auto priority = std::get<0>(tuple);
-    auto node     = std::get<1>(tuple);
-    auto indo     = std::get<2>(tuple);
+  MapTuple get (const State& state) const;
 
-    PrioritySetElemType elem {priority,node};
-
-    _prioritySet.insert(elem);
-    _tupleMap.insert({node,tuple});
-  }
-
-  bool contains (const NodeType& node) const {
-    return (_tupleMap.find(node) != _tupleMap.end());
-  }
-
-  TupleMapType get (const NodeType& node) const {
-    auto pos = _tupleMap.find(node);
-    return (*pos).second;
-  }
-
-  TupleMapType remove (const NodeType& node) {
-    auto mapPos = _tupleMap.find(node);
-    auto tuple = (*mapPos).second;
-    _tupleMap.erase(mapPos);
-
-    auto priority = std::get<0>(tuple);
-    auto tnode    = std::get<1>(tuple);
-    auto info     = std::get<2>(tuple);
-
-    auto setPos = _prioritySet.find({priority,node});
-    auto elem = *setPos;
-    _prioritySet.erase(setPos);
-
-    return tuple;
-  }
+  MapTuple remove (const State& state);
 
 private:
-  std::set<PrioritySetElemType>   _prioritySet;
-  std::map<NodeType,TupleMapType> _tupleMap;
+  std::set<PrioritySetElem>   _prioritySet;
+  std::map<State,MapTuple>    _tupleMap;
 };
 
 #endif // __KEVIN_PQ__

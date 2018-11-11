@@ -7,9 +7,6 @@
 
 using namespace std;
 
-typedef Scratchpad::StateInfo StateInfo;
-typedef Scratchpad::TupleType TupleType;
-
 Solver::Solver (const SearchProblem& problem)
   : _problem(problem)
 { }
