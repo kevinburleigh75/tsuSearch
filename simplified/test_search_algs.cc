@@ -2,12 +2,13 @@
 
 #include "solver.h"
 #include "dfs.h"
-// #include "bfs.h"
-// #include "ucs.h"
-// #include "gbfs.h"
-// #include "astar.h"
+#include "bfs.h"
+#include "ucs.h"
+#include "gbfs.h"
+#include "astar.h"
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -47,12 +48,12 @@ int main () {
 
   auto searchProblem = spBuilder.build();
 
-  vector<tuple<string,Solver*>> solverInfos {
-    {"DFS",   new Dfs(searchProblem)},
-    // {"BFS",   Bfs(searchProblem)},
-    // {"UCS",   Ucs(searchProblem)},
-    // {"GBFS",  Gbfs(searchProblem)},
-    // {"AStar", AStar(searchProblem)},
+  vector<tuple<string,shared_ptr<Solver>>> solverInfos {
+    {"DFS",   make_shared<Dfs>(searchProblem)},
+    {"BFS",   make_shared<Bfs>(searchProblem)},
+    {"UCS",   make_shared<Ucs>(searchProblem)},
+    {"GBFS",  make_shared<Gbfs>(searchProblem)},
+    {"AStar", make_shared<AStar>(searchProblem)},
   };
 
   for (auto info : solverInfos) {
