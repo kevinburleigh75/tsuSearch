@@ -7,6 +7,7 @@
 typedef int                       State;
 typedef double                    Cost;
 typedef double                    Heuristic;
+typedef double                    Priority;
 typedef State                     Action;
 typedef std::tuple<State,Action>  StateAction;
 

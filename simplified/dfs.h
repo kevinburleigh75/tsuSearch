@@ -13,6 +13,14 @@ public:
   ~Dfs ()                          = default;
 
   Dfs(const SearchProblem& problem);
+
+protected:
+  virtual Priority _impl_getPriority (const StateInfo& stateInfo);
+
+  virtual bool _impl_shouldUpdateSeenStates ();
+
+private:
+  Priority _counter;
 };
 
 #endif // __DFS_H__

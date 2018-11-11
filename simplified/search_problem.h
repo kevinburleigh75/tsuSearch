@@ -55,6 +55,19 @@ public:
 
   friend class SearchProblemBuilder;
 
+public:
+  const State& getStartState () const;
+
+  const Heuristic& getStateHeuristic (const State& state) const;
+
+  bool isGoal (const State& state) const;
+
+  const std::set<Action>& getActionsForState (const State& state) const;
+
+  const State& getActionSuccessor (const State& state, const Action& action) const;
+
+  const Cost& getActionCost (const State& state, const Action& action) const;
+
 private:
   SearchProblem (const std::set<State>&                   states,
                  const std::map<State,Heuristic>&         heuristicByState,

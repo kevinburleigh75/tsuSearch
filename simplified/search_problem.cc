@@ -137,3 +137,34 @@ SearchProblem::SearchProblem (const std::set<State>&                   states,
     _goalStates(goalStates)
 { }
 
+const State& SearchProblem::getStartState () const
+{
+  return _startState;
+}
+
+const Heuristic&  SearchProblem::getStateHeuristic (const State& state) const
+{
+  auto pos = _heuristicByState.find(state);
+  return pos->second;
+}
+
+bool SearchProblem::isGoal (const State& state) const
+{
+  return (_goalStates.count(state) != 0);
+}
+
+const std::set<Action>& SearchProblem::getActionsForState (const State& state) const
+{
+  return _actionsByState.at(state);
+}
+
+const State& SearchProblem::getActionSuccessor (const State& state, const Action& action) const
+{
+  StateAction stateAction(state, action);
+  return _successorByStateAction.at(stateAction);
+}
+
+const Cost& SearchProblem::getActionCost (const State& state, const Action& action) const {
+  StateAction stateAction(state, action);
+  return _costByStateAction.at(stateAction);
+}

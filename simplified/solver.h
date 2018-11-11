@@ -5,9 +5,13 @@
 
 #include "search_problem.h"
 #include "search_solution.h"
+#include "scratchpad.h"
 
 class Solver
 {
+public:
+  typedef Scratchpad::StateInfo StateInfo;
+
 public:
   Solver ()                               = delete;
   Solver (const Solver& orig)             = default;
@@ -19,6 +23,16 @@ public:
 
 public:
   SearchSolution solve ();
+
+protected:
+  virtual Priority _impl_getPriority (const StateInfo& stateInfo) = 0;
+
+  virtual bool _impl_shouldUpdateSeenStates () = 0;
+
+private:
+  void _addPathToSolution (SearchSolution&   solution,
+                           const StateInfo&  curStateInfo,
+                           const Scratchpad& scratch) const;
 
 private:
   const SearchProblem _problem;

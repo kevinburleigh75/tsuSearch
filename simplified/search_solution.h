@@ -15,9 +15,17 @@ public:
   ~SearchSolution ()                                      = default;
 
 public:
+  void setSolutionWasFound (const bool solutionWasFound);
+
   bool getSolutionWasFound () const;
 
+  void addPathState (const State& state);
+
   const std::vector<State>& getPath () const;
+
+private:
+  bool               _solutionWasFound;
+  std::vector<State> _path;
 };
 
 #endif // __SEARCH_SOLUTION_H__

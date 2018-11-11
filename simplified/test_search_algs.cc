@@ -1,7 +1,7 @@
 #include "search_problem.h"
 
-// #include "solver.h"
-// #include "dfs.h"
+#include "solver.h"
+#include "dfs.h"
 // #include "bfs.h"
 // #include "ucs.h"
 // #include "gbfs.h"
@@ -45,12 +45,10 @@ int main () {
       {7, 2.0},
     });
 
-#if 0
-
   auto searchProblem = spBuilder.build();
 
-  vector<tuple<string,Solver>> solverInfos {
-    {"DFS",   Dfs(searchProblem)},
+  vector<tuple<string,Solver*>> solverInfos {
+    {"DFS",   new Dfs(searchProblem)},
     // {"BFS",   Bfs(searchProblem)},
     // {"UCS",   Ucs(searchProblem)},
     // {"GBFS",  Gbfs(searchProblem)},
@@ -59,11 +57,11 @@ int main () {
 
   for (auto info : solverInfos) {
     auto solverName = std::get<0>(info);
-    auto solver     = std::get<1>(info);
+    auto pSolver     = std::get<1>(info);
 
     cout << "=====" << solverName << "=====" << endl;
 
-    auto solution = solver.solve();
+    auto solution = pSolver->solve();
 
     cout << "solutionWasFound = " << boolalpha << solution.getSolutionWasFound() << endl;
     cout << "path: ";
@@ -72,5 +70,6 @@ int main () {
     }
     cout << endl;
   }
+#if 0
 #endif
 }
