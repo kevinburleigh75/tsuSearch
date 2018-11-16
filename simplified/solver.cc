@@ -74,7 +74,7 @@ SearchSolution Solver::solve ()
           scratch.frontierPush(sucPriority, sucStateInfo);
         }
         else {
-          scratch.addToVisited(sucStateInfo);
+          scratch.addToVisited(oldStateInfo);
         }
       }
     }
