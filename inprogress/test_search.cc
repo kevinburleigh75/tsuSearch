@@ -1,30 +1,29 @@
 #include <iostream>
 
 #include "types.h"
-#include "kevin_pq.h"
+#include "scratchpad.h"
 
 using namespace std;
 
 int main ()
 {
-  KevinPq kpq;
-
-  kpq.push({ 3.0, 5, {5, {}, 100.0, 45.3}});
-  kpq.push({-2.0, 2, {2, {},  10.0,  6.3}});
-  kpq.push({ 1.0, 1, {1, {},  80.0, 20.1}});
+  Scratchpad scratchpad;
+  scratchpad.frontierPush(5, {5, {}, 100.0, 45.3});
+  scratchpad.frontierPush(3, {2, {},  10.0,  6.3});
+  scratchpad.frontierPush(4, {1, {},  80.0, 20.1});
 
   {
-    auto thingy = kpq.pop();
+    auto thingy = scratchpad.frontierPop();
     cout << "priority = " << std::get<0>(thingy) << endl;
   }
 
   {
-    auto thingy = kpq.pop();
+    auto thingy = scratchpad.frontierPop();
     cout << "priority = " << std::get<0>(thingy) << endl;
   }
 
   {
-    auto thingy = kpq.pop();
+    auto thingy = scratchpad.frontierPop();
     cout << "priority = " << std::get<0>(thingy) << endl;
   }
 
